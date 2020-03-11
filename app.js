@@ -15,5 +15,4 @@ app.use('api/orders', orders)
 
 const port = process.env.PORT || 3000
 
-app.get('/', (req, res) => res.json('Hello'))
 app.listen(port, () => console.log(`Server is listening at port ${port}`))
