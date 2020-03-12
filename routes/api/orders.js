@@ -22,11 +22,14 @@ router.get('/', async (req, res) => {
 //access       Public
 //To check if a product has been ordered
 router.get('/:_id', async (req, res) => {
+  const _id = req.params._id
   try {
     const order = await Order.findById(req.params._id)
     res.json({ msg: 'Product has been ordered', data: order })
   } catch (err) {
-    res.json({ message: 'Product not ordered, kindly visit the order page' })
+    res.json({
+      message: `Order with tracking number '${_id}' has not been ordered, kindly visit the order page`
+    })
   }
 })
 
@@ -55,5 +58,15 @@ router.post('/', (req, res) => {
     )
     .catch(err => console.log(err))
 })
+
+// router.delete('/:_id', async (req, res) => {
+//   const _id = req.params._id
+//   Order.findById(req.params._id)
+//     .then(order => {
+//       order.remove()
+//       .then(() => res.json({ msg: 'Order Deleted', data: order }))
+//     })
+//     .catch(err => console.log(err))
+// })
 
 module.exports = router
