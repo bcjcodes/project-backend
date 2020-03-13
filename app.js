@@ -4,7 +4,8 @@ const bodyParser = require('body-parser')
 require('dotenv').config()
 const users = require('./routes/api/users')
 const orders = require('./routes/api/orders')
-const app = express()
+const app = express();
+const cors = require('cors');
 
 //Initialized Body Parser Middleware
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -22,6 +23,18 @@ mongoose
 app.get('/', (req, res) => {
   res.send('I love coding')
 })
+// allow cors access
+app.use(cors({
+  origin: '*',
+  optionsSuccessStatus: 200
+}));
+
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+  next();
+});
 
 //Use Routes
 app.use('/api/orders', orders)
