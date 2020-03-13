@@ -17,18 +17,18 @@ router.get('/', async (req, res) => {
   }
 })
 
-//@route    GET api/orders/:_id
+//@route    GET api/orders/:id
 //@desc     Testing specific order route
 //access       Public
 //To check if a product has been ordered
-router.get('/:_id', async (req, res) => {
-  const _id = req.params._id
+router.get('/:id', async (req, res) => {
+  const id = req.params.id
   try {
-    const order = await Order.findById(req.params._id)
+    const order = await Order.findById(req.params.id)
     res.json({ msg: 'Product has been ordered', data: order })
   } catch (err) {
     res.json({
-      message: `Order with tracking number '${_id}' has not been ordered, kindly visit the order page`
+      message: `Order with tracking number '${id}' has not been ordered, kindly visit the order page`
     })
   }
 })
@@ -45,7 +45,8 @@ router.post('/', (req, res) => {
     description: req.body.description,
     price: req.body.price,
     total: req.body.total,
-    category: req.body.category
+    category: req.body.category,
+    contact: req.body.contact
   })
 
   const amountTotal = Number(newOrder.quantity) * Number(newOrder.price)
@@ -59,14 +60,50 @@ router.post('/', (req, res) => {
     .catch(err => console.log(err))
 })
 
-// router.delete('/:_id', async (req, res) => {
-//   const _id = req.params._id
-//   Order.findById(req.params._id)
-//     .then(order => {
-//       order.remove()
-//       .then(() => res.json({ msg: 'Order Deleted', data: order }))
-//     })
-//     .catch(err => console.log(err))
-// })
+//@route      PUT api/orders/:id
+//@desc       Updating orders
+//@Public     access
+router.patch('/:id', (req, res) => {
+  const id = req.params.id
+  Order.updateOne(
+    { _id: req.params.id },
+    {
+      $set: {
+        name: req.body.name,
+        quantity: req.body.quantity,
+        brand: req.body.brand,
+        description: req.body.description,
+        price: req.body.price,
+        total: req.body.total,
+        category: req.body.category,
+        contact: req.body.contact
+      }
+    },
+    { new: true, runValidators: true }
+  )
+    .then(order => res.json({ msg: 'Order Updated', data: order }))
+    .catch(err =>
+      // res.status(404).json({
+      //   msg: `Order with the tracking number ${id} does not exist, visit the order page to make a purchase`
+      // })
+      console.log(err)
+    )
+})
+
+//@route      DELETE api/orders/:id
+//@desc       Deleting orders
+//access      Public
+router.delete('/:id', (req, res) => {
+  const id = req.params.id
+  Order.findById(req.params.id)
+    .then(order => {
+      order.remove().then(() => res.json({ msg: 'Order Deleted', data: order }))
+    })
+    .catch(err =>
+      res.status(404).json({
+        msg: `Order with the tracking number ${id} does not exist, visit the order page to make a purchase`
+      })
+    )
+})
 
 module.exports = router

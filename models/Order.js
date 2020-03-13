@@ -34,6 +34,9 @@ const OrderSchema = new Schema({
   category: {
     type: String,
     required: true
+  },
+  contact: {
+    type: String
   }
 })
 
