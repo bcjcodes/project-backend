@@ -42,9 +42,9 @@ router.get('/:id', async (req, res) => {
 //access       Public
 //Create an order
 router.post('/', async (req, res) => {
-  
+  console.log(req.files)
  try{
-  if(req.files.image.size > 1){
+  if(req.files.image && req.files.image.size > 1){
     imageRes = await Helper.uploadToCloudinary(req.files.image)
     imageLink = `${imageRes.public_id}.${imageRes.format}`;
   }else{
