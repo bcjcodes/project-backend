@@ -37,6 +37,9 @@ const OrderSchema = new Schema({
   },
   contact: {
     type: String
+  },
+  image: {
+    type: String
   }
 })
 

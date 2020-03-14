@@ -6,6 +6,7 @@ const users = require('./routes/api/users')
 const orders = require('./routes/api/orders')
 const app = express();
 const cors = require('cors');
+const fileUpload = require('express-fileupload');
 
 //Initialized Body Parser Middleware
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -35,6 +36,12 @@ app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
   next();
 });
+
+// Setup express fileupload
+app.use(fileUpload({
+  useTempFiles: true,
+  tempFileDir: '/tmp/',
+}));
 
 //Use Routes
 app.use('/api/orders', orders)
