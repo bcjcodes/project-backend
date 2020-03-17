@@ -29,7 +29,6 @@ const OrderSchema = new Schema({
   },
   total: {
     type: Number,
-    required: true
   },
   category: {
     type: String,
@@ -40,6 +39,14 @@ const OrderSchema = new Schema({
   },
   image: {
     type: String
+  },
+  createdAt: {
+    type : Date, 
+    default: Date.now
+  },
+  updatedAt: {
+    type : Date, 
+    default: Date.now
   }
 })
 
