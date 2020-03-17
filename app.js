@@ -22,7 +22,8 @@ mongoose
   .catch(err => console.log(err))
 
 app.get('/', (req, res) => {
-  res.send('I love coding')
+  res.send(`Shopping App API find Docs here 
+  https://documenter.getpostman.com/view/9048286/SzS4T7pS?version=latest`)
 })
 // allow cors access
 app.use(cors({
