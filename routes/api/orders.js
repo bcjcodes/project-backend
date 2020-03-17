@@ -3,6 +3,9 @@ const router = express.Router()
 const Helper = require('./helper')
 const uuid = require('uuid')
 
+//Load Order Validation
+const validateOrderInput = require('../../validation/order')
+
 //Load Order Model
 const Order = require('../../models/Order')
 
@@ -12,10 +15,13 @@ const Order = require('../../models/Order')
 router.get('/', async (req, res) => {
   try {
     const order = await Order.find()
-    res.json({ msg: 'Available Orders', 
-    data: order,
-    image_link: "https://res.cloudinary.com/oluwamayowaf/image/upload/v1584127777/",
-    image_small_view_format: "w_200,c_thumb,ar_4:4,g_face/" })
+    res.json({
+      msg: 'Available Orders',
+      data: order,
+      image_link:
+        'https://res.cloudinary.com/oluwamayowaf/image/upload/v1584127777/',
+      image_small_view_format: 'w_200,c_thumb,ar_4:4,g_face/'
+    })
   } catch (err) {
     res.json({ msg: 'No available orders' })
   }
@@ -42,43 +48,79 @@ router.get('/:id', async (req, res) => {
 //access       Public
 //Create an order
 router.post('/', async (req, res) => {
-  
- try{
-  if(req.files.image && req.files.image.size > 1){
-    imageRes = await Helper.uploadToCloudinary(req.files.image)
-    imageLink = `${imageRes.public_id}.${imageRes.format}`;
-  }else{
-    imageLink='SCA/noimage.jpg';
-
+  const { errors, isValid } = validateOrderInput(req.body)
+  //Check Validation
+  if (!isValid) {
+    return res.status(400).json(errors)
   }
-  const newOrder = new Order({
-    name: req.body.name,
-    quantity: req.body.quantity,
-    brand: req.body.brand,
-    description: req.body.description,
-    price: req.body.price,
-    total: req.body.total,
-    category: req.body.category,
-    contact: req.body.contact,
-    image: imageLink, 
-  })
 
-  const amountTotal = Number(newOrder.quantity) * Number(newOrder.price)
-  newOrder.total = amountTotal
+  try {
+    if (req.files.image && req.files.image.size > 1) {
+      imageRes = await Helper.uploadToCloudinary(req.files.image)
+      imageLink = `${imageRes.public_id}.${imageRes.format}`
+    } else {
+      imageLink = 'SCA/noimage.jpg'
+    }
 
-  newOrder
-    .save()
-    .then(order =>
-      res.status(200).json({ msg: 'Order Created Successfully', 
-      data: order,
-      image_link: "https://res.cloudinary.com/oluwamayowaf/image/upload/v1584127777/",
-      image_small_view_format: "w_200,c_thumb,ar_4:4,g_face/" })
-    )
-    .catch(err => console.log(err))
-  }catch(error){
+    const newOrder = new Order({
+      name: req.body.name,
+      quantity: req.body.quantity,
+      brand: req.body.brand,
+      description: req.body.description,
+      price: req.body.price,
+      total: req.body.total,
+      category: req.body.category,
+      image: imageLink
+    })
+
+    const amountTotal = Number(newOrder.quantity) * Number(newOrder.price)
+    newOrder.total = Number(amountTotal)
+
+    newOrder
+      .save()
+      .then(order =>
+        res.status(200).json({
+          msg: 'Order Created Successfully',
+          data: order,
+          image_link:
+            'https://res.cloudinary.com/oluwamayowaf/image/upload/v1584127777/',
+          image_small_view_format: 'w_200,c_thumb,ar_4:4,g_face/'
+        })
+      )
+      .catch(err => console.log(err))
+  } catch (error) {
     console.log(error)
   }
 })
+
+// router.post('/upload', async (req, res) => {
+//   try {
+//     if (req.files.image && req.files.image.size > 1) {
+//       imageRes = await Helper.uploadToCloudinary(req.files.image)
+//       imageLink = `${imageRes.public_id}.${imageRes.format}`
+//     } else {
+//       imageLink = 'SCA/noimage.jpg'
+//     }
+//     const newOrder = new Order({
+//       image: imageLink
+//     })
+
+//     newOrder
+//       .save()
+//       .then(order =>
+//         res.status(200).json({
+//           msg: 'Upload Successful',
+//           data: order,
+//           image_link:
+//             'https://res.cloudinary.com/oluwamayowaf/image/upload/v1584127777/',
+//           image_small_view_format: 'w_200,c_thumb,ar_4:4,g_face/'
+//         })
+//       )
+//       .catch(err => console.log(err))
+//   } catch (error) {
+//     console.log(error)
+//   }
+// })
 
 //@route      PUT api/orders/:id
 //@desc       Updating orders

@@ -4,38 +4,25 @@ const Schema = mongoose.Schema
 
 //Create Schema
 const OrderSchema = new Schema({
-  // product_id: {
-  //   type: String,
-  //   required: true
-  // },
   name: {
-    type: String,
-    required: true
+    type: String
   },
   quantity: {
-    type: Number,
-    requred: true
+    type: String
   },
   brand: {
     type: String
   },
   description: {
-    type: String,
-    required: true
+    type: String
   },
   price: {
-    type: Number,
-    required: true
+    type: String
   },
   total: {
-    type: Number,
-    required: true
+    type: Number
   },
   category: {
-    type: String,
-    required: true
-  },
-  contact: {
     type: String
   },
   image: {
