@@ -1,12 +1,13 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
+const passport = require('passport')
 require('dotenv').config()
 const users = require('./routes/api/users')
 const orders = require('./routes/api/orders')
-const app = express();
-const cors = require('cors');
-const fileUpload = require('express-fileupload');
+const app = express()
+const cors = require('cors')
+const fileUpload = require('express-fileupload')
 
 //Initialized Body Parser Middleware
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -21,27 +22,40 @@ mongoose
   .then(() => console.log('Database Connected'))
   .catch(err => console.log(err))
 
-app.get('/', (req, res) => {
-  res.send('I love coding')
-})
+//Passport middleware
+app.use(passport.initialize())
+
+//Passport Config
+require('./config/passport')(passport)
+
 // allow cors access
-app.use(cors({
-  origin: '*',
-  optionsSuccessStatus: 200
-}));
+app.use(
+  cors({
+    origin: '*',
+    optionsSuccessStatus: 200
+  })
+)
 
 app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
-  next();
-});
+  res.setHeader('Access-Control-Allow-Origin', '*')
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization'
+  )
+  res.setHeader(
+    'Access-Control-Allow-Methods',
+    'GET, POST, PUT, DELETE, PATCH, OPTIONS'
+  )
+  next()
+})
 
 // Setup express fileupload
-app.use(fileUpload({
-  useTempFiles: true,
-  tempFileDir: '/tmp/',
-}));
+app.use(
+  fileUpload({
+    useTempFiles: true,
+    tempFileDir: '/tmp/'
+  })
+)
 
 //Use Routes
 app.use('/api/orders', orders)

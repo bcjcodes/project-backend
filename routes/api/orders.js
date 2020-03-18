@@ -145,10 +145,9 @@ router.patch('/:id', (req, res) => {
   )
     .then(order => res.json({ msg: 'Order Updated', data: order }))
     .catch(err =>
-      // res.status(404).json({
-      //   msg: `Order with the tracking number ${id} does not exist, visit the order page to make a purchase`
-      // })
-      console.log(err)
+      res.status(404).json({
+        msg: `Order with the tracking number ${id} does not exist, visit the order page to make a purchase`
+      })
     )
 })
 
