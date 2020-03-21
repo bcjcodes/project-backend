@@ -73,6 +73,41 @@ try{
   })
  }
 })
+
+//@route    GET api/orders/bycategory/:category
+//@desc     Get all Products in a particular category
+//access       Public
+//Get all Products in a particular category 
+router.get('/bycategory/:category', async (req, res) => {
+  const { category } = req.params;
+try{
+  Order.find({ category: category }, (error, order) => {
+    if (!error && order) {
+      res.status(200).json({ 
+        status: 'success',
+        data:{
+          message: 'Product in this category', 
+          order,
+        },
+        image_link: "https://res.cloudinary.com/oluwamayowaf/image/upload/v1584127777/",
+        image_small_view_format: "w_200,c_thumb,ar_4:4,g_face/"     
+     })
+    } else {
+      res.status(404).json({ 
+        status: 'error',
+        error: `No Products have been addded in that category`,  
+      })
+  
+  } 
+ })
+}catch (err) {
+  res.status(500).json({
+    status: 'error', 
+    error: 'Something went wrong please try again',
+    hint: err
+  })
+ }
+})
  
 //@route    POST api/orders
 //@desc     Creating order route
@@ -97,6 +132,20 @@ router.post('/', async (req, res) => {
     } else {
       imageLink = 'SCA/noimage.jpg'
     }
+
+    const newOrder = new Order ({
+      name: req.body.name,	    
+      quantity: req.body.quantity,	    
+      brand: req.body.brand,	     
+      description: req.body.description,	     
+      price: req.body.price,	     
+      total: req.body.total,	        
+      category: req.body.category,	       
+      image: imageLink
+    })
+
+    const amountTotal = Number(newOrder.quantity) * Number(newOrder.price)	
+    newOrder.total = Number(amountTotal)
 
   newOrder
     .save()
