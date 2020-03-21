@@ -3,7 +3,15 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 //Create Schema
-const OrderSchema = new Schema({
+const UserSchema = new Schema({
+  email: {
+    type: String,
+    required: true
+  },
+  password: {
+    type: String,
+    required: true
+  },
   name: {
     type: String
   },
@@ -27,15 +35,7 @@ const OrderSchema = new Schema({
   },
   image: {
     type: String
-  },
-  createdAt: {
-    type : Date, 
-    default: Date.now
-  },
-  updatedAt: {
-    type : Date, 
-    default: Date.now
   }
 })
 
-module.exports = Order = mongoose.model('orders', OrderSchema)
+module.exports = User = mongoose.model('users', UserSchema)
