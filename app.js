@@ -28,6 +28,11 @@ app.use(passport.initialize())
 //Passport Config
 require('./config/passport')(passport)
 
+app.get('/', (req, res) => {
+  res.send(`Shopping App API find Docs here 
+  https://documenter.getpostman.com/view/9048286/SzS4T7pS?version=latest`)
+}) 
+
 // allow cors access
 app.use(
   cors({
