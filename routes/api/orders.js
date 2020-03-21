@@ -90,15 +90,6 @@ router.post('/', async (req, res) => {
         }
     })
 }
- try{
-  if(req.files.image && req.files.image.size > 1){
-    imageRes = await Helper.uploadToCloudinary(req.files.image)
-    imageLink = `${imageRes.public_id}.${imageRes.format}`;
-  }else{
-    imageLink='SCA/noimage.jpg';
-
-  }
-
   try {
     if (req.files.image && req.files.image.size > 1) {
       imageRes = await Helper.uploadToCloudinary(req.files.image)
